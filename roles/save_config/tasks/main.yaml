@@ -1,0 +1,5 @@
+- name: Back up running-config
+  aoscx_config:
+    save_when: always
+  vars:
+    ansible_connection: network_cli

@@ -1,0 +1,41 @@
+hostname: Spine3
+
+router_id: 3.3.3.3
+
+interfaces:
+
+  - name: 1/1/1
+    mode: layer3
+    ipv4_address: 10.0.3.0/31
+    mtu: 9216
+    description: connection to Leaf1
+    ospf_enabled: True
+
+  - name: 1/1/2
+    mode: layer3
+    ipv4_address: 10.0.3.2/31
+    mtu: 9216
+    description: connection to Leaf2
+    ospf_enabled: True
+
+  - name: 1/1/3
+    mode: layer3
+    ipv4_address: 10.0.3.4/31
+    mtu: 9216
+    description: connection to Leaf3
+    ospf_enabled: True
+
+  - name: 1/1/4
+    mode: layer3
+    ipv4_address: 10.0.3.6/31
+    mtu: 9216
+    description: connection to Leaf4
+    ospf_enabled: True
+
+loopbacks:
+
+  - name: loopback 1
+    mode: layer3
+    ipv4_address: 3.3.3.3/32
+    description: loopback 1
+    ospf_enabled: True

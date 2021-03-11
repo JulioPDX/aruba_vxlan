@@ -1,0 +1,12 @@
+- name: Playbook to Deploy All the Things!
+  hosts: network
+  gather_facts: no
+  collections:
+    - arubanetworks.aoscx
+  roles:
+    - base
+    - vrf
+    - interfaces
+    - ospf
+    - bgp
+    - save_config

@@ -1,0 +1,13 @@
+interface {{vxlan.name }}
+    source ip {{ vxlan.source_ip }}
+    no shutdown
+{% for vni in vxlan.vnis %}
+{% if vni.routing is defined %}
+    vni {{vni.id }}
+        routing
+        vrf {{ vni.vrf }}
+{% else %}
+    vni {{vni.id }}
+        vlan {{ vni.vlan }}
+{% endif %}
+{% endfor %}

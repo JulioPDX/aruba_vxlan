@@ -1,0 +1,23 @@
+{% for v in vrfs %}
+vrf {{ v.name }}
+    rd {{ v.rd }}
+    route-target export {{ v.rt_export }} evpn
+    route-target import {{ v.rt_import }} evpn
+{% endfor %}
+!
+{% for v in vlans %}
+vlan {{ v.id }}
+    description {{ v.description }}
+{% endfor %}
+!
+virtual-mac {{ v_mac }}
+!
+evpn
+{% for v in vlans %}
+    vlan {{ v.id }}
+        rd auto
+        route-target export auto
+        route-target import auto
+        redistribute host-route
+{% endfor %}
+!

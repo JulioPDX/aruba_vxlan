@@ -1,0 +1,12 @@
+- name: Template VRF Jinja to files
+  ansible.builtin.template:
+    src: ./vrf.j2
+    dest: ./roles/vrf/files/{{ inventory_hostname }}.conf
+  when: "'Leafs' in group_names"
+
+- name: Configure VRFs
+  aoscx_config:
+    src: ./roles/vrf/files/{{ inventory_hostname }}.conf
+  vars:
+    ansible_connection: network_cli
+  when: "'Leafs' in group_names"

@@ -1,0 +1,4 @@
+- name: Adding or Updating Banner
+  aoscx_banner:
+    banner_type: banner
+    banner: "Hello, this is {{ inventory_hostname }}"

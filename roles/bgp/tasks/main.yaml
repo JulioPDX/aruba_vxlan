@@ -1,0 +1,11 @@
+- name: Template BGP Jinja to files
+  ansible.builtin.template:
+    src: ./bgp.j2
+    dest: ./roles/bgp/files/{{ inventory_hostname }}.conf
+
+- name: Configure BGP
+  aoscx_config:
+    src: ./roles/bgp/files/{{ inventory_hostname }}.conf
+  vars:
+    ansible_connection: network_cli
+  when: bgp

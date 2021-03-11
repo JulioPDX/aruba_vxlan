@@ -1,0 +1,22 @@
+router bgp {{ bgp.asn }}
+    bgp router-id {{ router_id }}
+{% for n in bgp.neighbors %}
+    neighbor {{ n.neighbor_ip }} remote-as {{ n.neighbor_as }}
+    neighbor {{ n.neighbor_ip }} update-source loopback 1
+{% endfor %}
+    address-family l2vpn evpn
+{% for n in bgp.neighbors %}
+        neighbor {{ n.neighbor_ip }} activate
+        neighbor {{ n.neighbor_ip }} next-hop-unchanged
+        neighbor {{ n.neighbor_ip }} send-community extended
+{% endfor %}
+    exit-address-family
+!
+{% if vrfs %}
+{% for v in vrfs %}
+    vrf {{ v.name }}
+        address-family ipv4 unicast
+            redistribute connected
+        exit-address-family
+{% endfor %}
+!

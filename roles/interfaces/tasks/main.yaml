@@ -1,0 +1,50 @@
+- name: Creating L3 Interface
+  aoscx_l3_interface:
+    interface: "{{ item.name }}"
+    description: "{{ item.description }}"
+    ipv4: ['{{ item.ipv4_address }}']
+  loop: "{{ interfaces }}"
+  when: "item.mode == 'layer3'"
+
+- name: Reset Interfaces
+  aoscx_config:
+    lines:
+      - shut
+      - no shut
+    parents: interface {{ item.name }}
+  loop: "{{ interfaces }}"
+  vars:
+    ansible_connection: network_cli
+
+- name: Configure loopbacks
+  aoscx_config:
+    lines:
+      - ip address {{ item.ipv4_address }}
+    parents: interface {{ item.name }}
+  loop: "{{ loopbacks }}"
+  vars:
+    ansible_connection: network_cli
+
+- name: Creating SVIs
+  aoscx_config:
+    lines:
+      - vrf attach {{ item.vrf }}
+      - ip address {{ item.ip_address }}
+      - active-gateway ip mac {{ item.ag_ip_mac }}
+      - active-gateway ip {{ item.ag_ip }}
+    parents: interface vlan {{ item.id }}
+  loop: "{{ vlans }}"
+  when: "'Leafs' in group_names"
+
+- name: Template VXLAN Jinja to files
+  ansible.builtin.template:
+    src: ./vxlan.j2
+    dest: ./roles/interfaces/files/{{ inventory_hostname }}_vxlan.conf
+  when: "'Leafs' in group_names"
+
+- name: Configure VXLAN
+  aoscx_config:
+    src: ./roles/interfaces/files/{{ inventory_hostname }}_vxlan.conf
+  vars:
+    ansible_connection: network_cli
+  when: "'Leafs' in group_names"

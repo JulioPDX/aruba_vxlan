@@ -1,0 +1,31 @@
+- name: Configure Main OSPF
+  aoscx_config:
+    lines:
+      - router-id {{ router_id }}
+      - area 0.0.0.0
+    parents: router ospf 1
+  vars:
+    ansible_connection: network_cli
+
+- name: Configure OSPF Under Interfaces with MTU
+  aoscx_config:
+    lines:
+      - ip ospf 1 area 0.0.0.0
+      - ip ospf network point-to-point
+      - mtu 9198
+      - ip mtu 9198
+    parents: interface {{ item.name }}
+  loop: "{{ interfaces }}"
+  vars:
+    ansible_connection: network_cli
+  when: item.ospf_enabled
+
+- name: Configure OSPF Under Lookbacks
+  aoscx_config:
+    lines:
+      - ip ospf 1 area 0.0.0.0
+    parents: interface {{ item.name }}
+  loop: "{{ loopbacks }}"
+  vars:
+    ansible_connection: network_cli
+  when: item.ospf_enabled
