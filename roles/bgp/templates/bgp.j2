@@ -12,11 +12,12 @@ router bgp {{ bgp.asn }}
 {% endfor %}
     exit-address-family
 !
-{% if vrfs %}
+{% if vrfs is defined %}
 {% for v in vrfs %}
     vrf {{ v.name }}
         address-family ipv4 unicast
             redistribute connected
         exit-address-family
 {% endfor %}
+{% endif %}
 !
